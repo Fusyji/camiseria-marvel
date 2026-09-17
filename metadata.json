@@ -1,0 +1,6 @@
+{
+  "name": "Marvel Sastrería (MR)",
+  "description": "Marvel Sastrería (MR) • Alta Sastrería Masculina Bespoke. No vendemos tallas, creamos prendas únicas. Confección 100% a medida, lino italiano y algodón egipcio.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
