@@ -1,0 +1,1434 @@
+/**
+ * Marvel Sastrería (MR) — Bespoke Shirt Configurator
+ * Stylesheet scoped strictly under .mr-configurator
+ * Palette:
+ *   - Rojo Marvel: #CC0001
+ *   - Plata / Cromo: #E6E7EB
+ *   - Negro Profundo: #0A0A0A
+ */
+
+/* ==========================================================================
+   Root Container & Variables
+   ========================================================================== */
+.mr-configurator {
+  --mr-red: #CC0001;
+  --mr-red-hover: #e60002;
+  --mr-red-glow: rgba(204, 0, 1, 0.28);
+  --mr-chrome: #E6E7EB;
+  --mr-chrome-dim: #A8ABB3;
+  --mr-black: #0A0A0A;
+  --mr-dark-card: #121212;
+  --mr-dark-panel: #161616;
+  --mr-dark-hover: #1F1F1F;
+  --mr-border: #262626;
+  --mr-border-light: #333333;
+  --mr-font-serif: "Playfair Display", Georgia, serif;
+  --mr-font-sans: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  
+  font-family: var(--mr-font-sans);
+  background-color: var(--mr-black);
+  color: var(--mr-chrome);
+  box-sizing: border-box;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  border: 1px solid var(--mr-border);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8), 0 0 1px rgba(230, 231, 235, 0.1);
+}
+
+.mr-configurator *,
+.mr-configurator *::before,
+.mr-configurator *::after {
+  box-sizing: inherit;
+}
+
+/* ==========================================================================
+   Header Bar of Configurator
+   ========================================================================== */
+.mr-configurator__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  background: linear-gradient(180deg, #161616 0%, #0E0E0E 100%);
+  border-bottom: 1px solid var(--mr-border);
+}
+
+.mr-configurator__brand {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.mr-configurator__logo-box {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--mr-border-light);
+  background: #000;
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+}
+
+.mr-configurator__logo-img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.mr-configurator__logo-fallback {
+  font-family: var(--mr-font-serif);
+  font-size: 20px;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -1px;
+}
+
+.mr-configurator__logo-m {
+  color: var(--mr-red);
+}
+
+.mr-configurator__logo-r {
+  color: var(--mr-chrome);
+  margin-left: -1px;
+}
+
+.mr-configurator__brand-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.mr-configurator__brand-title {
+  font-family: var(--mr-font-serif);
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--mr-chrome);
+  margin: 0;
+}
+
+.mr-configurator__brand-subtitle {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  color: var(--mr-red);
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+
+.mr-configurator__tagline {
+  font-family: var(--mr-font-serif);
+  font-style: italic;
+  font-size: 13px;
+  color: var(--mr-chrome-dim);
+  display: none;
+}
+
+@media (min-width: 900px) {
+  .mr-configurator__tagline {
+    display: block;
+  }
+}
+
+/* ==========================================================================
+   3-Column Main Layout
+   ========================================================================== */
+.mr-configurator__body {
+  display: flex;
+  flex-direction: column;
+  min-height: 700px;
+  background-color: var(--mr-black);
+}
+
+@media (min-width: 1024px) {
+  .mr-configurator__body {
+    display: grid;
+    grid-template-columns: 240px 1fr 370px;
+    align-items: stretch;
+  }
+}
+
+/* ==========================================================================
+   Sidebar (Left: Steps List)
+   ========================================================================== */
+.mr-configurator__sidebar {
+  background-color: #0d0d0d;
+  border-bottom: 1px solid var(--mr-border);
+  padding: 12px 14px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  max-height: none;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}
+
+@media (max-width: 1023px) {
+  .mr-configurator__sidebar-title {
+    display: none;
+  }
+  .mr-configurator__step-list {
+    flex-direction: row;
+    gap: 8px;
+    width: max-content;
+  }
+  .mr-configurator__step-item {
+    width: auto;
+  }
+  .mr-configurator__step-btn {
+    width: auto;
+    white-space: nowrap;
+    padding: 8px 12px;
+    background: #141414;
+    border: 1px solid var(--mr-border);
+    border-radius: 9999px;
+  }
+  .mr-configurator__step-status-icon {
+    display: none;
+  }
+}
+
+@media (min-width: 1024px) {
+  .mr-configurator__sidebar {
+    border-bottom: none;
+    border-right: 1px solid var(--mr-border);
+    max-height: 840px;
+    padding: 24px 14px;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+}
+
+.mr-configurator__sidebar-title {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--mr-chrome-dim);
+  margin: 0 0 16px 8px;
+}
+
+.mr-configurator__step-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.mr-configurator__step-item {
+  width: 100%;
+}
+
+.mr-configurator__step-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  color: var(--mr-chrome-dim);
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.mr-configurator__step-btn:hover:not(:disabled) {
+  background-color: var(--mr-dark-hover);
+  color: var(--mr-chrome);
+  border-color: #2e2e2e;
+}
+
+.mr-configurator__step-btn:focus-visible {
+  outline: 2px solid var(--mr-red);
+  outline-offset: 2px;
+}
+
+.mr-configurator__step-badge {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  background-color: #1a1a1a;
+  border: 1px solid var(--mr-border-light);
+  color: var(--mr-chrome-dim);
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.mr-configurator__step-text {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.mr-configurator__step-name {
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: inherit;
+}
+
+.mr-configurator__step-status-icon {
+  width: 14px;
+  height: 14px;
+  opacity: 0;
+  color: #22c55e;
+  flex-shrink: 0;
+}
+
+/* Active Step */
+.mr-configurator__step-item--active .mr-configurator__step-btn {
+  background-color: rgba(204, 0, 1, 0.08);
+  border-color: var(--mr-red);
+  color: #ffffff;
+}
+
+.mr-configurator__step-item--active .mr-configurator__step-badge {
+  background-color: var(--mr-red);
+  border-color: var(--mr-red);
+  color: #ffffff;
+  box-shadow: 0 0 10px var(--mr-red-glow);
+}
+
+/* Completed Step */
+.mr-configurator__step-item--completed .mr-configurator__step-badge {
+  background-color: #1f2937;
+  border-color: #4b5563;
+  color: var(--mr-chrome);
+}
+
+.mr-configurator__step-item--completed .mr-configurator__step-status-icon {
+  opacity: 1;
+}
+
+.mr-configurator__step-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ==========================================================================
+   Center Panel (Options for active step)
+   ========================================================================== */
+.mr-configurator__main {
+  background-color: var(--mr-black);
+  padding: 24px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow-y: auto;
+  position: relative;
+}
+
+@media (min-width: 1024px) {
+  .mr-configurator__main {
+    padding: 32px 36px;
+    border-right: 1px solid var(--mr-border);
+  }
+}
+
+.mr-configurator__step-header {
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--mr-border);
+}
+
+.mr-configurator__step-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  color: var(--mr-red);
+  margin-bottom: 4px;
+  display: block;
+}
+
+.mr-configurator__step-title {
+  font-family: var(--mr-font-serif);
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--mr-chrome);
+  margin: 0 0 6px 0;
+}
+
+.mr-configurator__step-subtitle {
+  font-size: 13px;
+  color: var(--mr-chrome-dim);
+  margin: 0;
+  line-height: 1.5;
+  max-width: 600px;
+}
+
+/* Selection Grids Generic */
+.mr-configurator__options-area {
+  flex: 1;
+  margin-bottom: 32px;
+}
+
+/* ==========================================================================
+   Step 1: Fabrics Grid (12-16 swatches)
+   ========================================================================== */
+.mr-configurator__fabric-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+@media (min-width: 480px) {
+  .mr-configurator__fabric-grid {
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 14px;
+  }
+}
+
+.mr-configurator__fabric-card {
+  background: var(--mr-dark-card);
+  border: 1px solid var(--mr-border);
+  border-radius: 8px;
+  padding: 10px 8px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  min-height: 120px;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+.mr-configurator__fabric-card:hover {
+  border-color: var(--mr-chrome-dim);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.5);
+}
+
+.mr-configurator__fabric-card[aria-checked="true"] {
+  border-color: var(--mr-red);
+  box-shadow: 0 0 0 1px var(--mr-red), 0 0 14px var(--mr-red-glow);
+  background: #191414;
+}
+
+.mr-configurator__fabric-swatch {
+  width: 100%;
+  height: 64px;
+  border-radius: 6px;
+  border: 1px solid rgba(255,255,255,0.08);
+  margin-bottom: 8px;
+  position: relative;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.mr-configurator__fabric-name {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--mr-chrome);
+  line-height: 1.3;
+  pointer-events: none;
+}
+
+.mr-configurator__fabric-category {
+  font-size: 9px;
+  color: var(--mr-chrome-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-top: 3px;
+  pointer-events: none;
+}
+
+/* Ensure inner card elements don't block clicks */
+.mr-configurator__fabric-card *,
+.mr-configurator__color-card *,
+.mr-configurator__fit-card *,
+.mr-configurator__icon-card *,
+.mr-configurator__pocket-card *,
+.mr-configurator__button-card *,
+.mr-configurator__insignia-card * {
+  pointer-events: none;
+}
+
+/* Pattern CSS Generators */
+.mr-pattern-stripes {
+  background: repeating-linear-gradient(
+    90deg,
+    var(--pat-bg, #ffffff),
+    var(--pat-bg, #ffffff) 5px,
+    var(--pat-fg, #2563eb) 5px,
+    var(--pat-fg, #2563eb) 8px
+  );
+}
+
+.mr-pattern-gingham {
+  background-color: var(--pat-bg, #ffffff);
+  background-image:
+    linear-gradient(45deg, var(--pat-fg, rgba(0, 50, 150, 0.4)) 25%, transparent 25%),
+    linear-gradient(-45deg, var(--pat-fg, rgba(0, 50, 150, 0.4)) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, var(--pat-fg, rgba(0, 50, 150, 0.4)) 75%),
+    linear-gradient(-45deg, transparent 75%, var(--pat-fg, rgba(0, 50, 150, 0.4)) 75%);
+  background-size: 12px 12px;
+}
+
+.mr-pattern-tartan {
+  background-color: var(--pat-bg, #1e293b);
+  background-image: 
+    repeating-linear-gradient(0deg, transparent, transparent 10px, rgba(204, 0, 1, 0.5) 10px, rgba(204, 0, 1, 0.5) 14px),
+    repeating-linear-gradient(90deg, transparent, transparent 10px, rgba(230, 231, 235, 0.4) 10px, rgba(230, 231, 235, 0.4) 14px);
+  background-size: 24px 24px;
+}
+
+.mr-pattern-oxford {
+  background-color: var(--pat-bg, #f1f5f9);
+  background-image: 
+    radial-gradient(var(--pat-fg, #94a3b8) 1px, transparent 1px),
+    radial-gradient(var(--pat-fg, #94a3b8) 1px, var(--pat-bg, #f1f5f9) 1px);
+  background-size: 6px 6px;
+  background-position: 0 0, 3px 3px;
+}
+
+/* ==========================================================================
+   Step 2: Colors Grid (10-12 swatches)
+   ========================================================================== */
+.mr-configurator__color-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+@media (min-width: 420px) {
+  .mr-configurator__color-grid {
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 12px;
+  }
+}
+
+.mr-configurator__color-card {
+  background: var(--mr-dark-card);
+  border: 1px solid var(--mr-border);
+  border-radius: 8px;
+  padding: 12px 8px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: all 0.2s ease;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+.mr-configurator__color-card:hover {
+  border-color: var(--mr-chrome-dim);
+  transform: translateY(-2px);
+}
+
+.mr-configurator__color-card[aria-checked="true"] {
+  border-color: var(--mr-red);
+  box-shadow: 0 0 0 1px var(--mr-red), 0 0 12px var(--mr-red-glow);
+  background: #171212;
+}
+
+.mr-configurator__color-dot {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.15);
+  margin-bottom: 8px;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.mr-configurator__color-name {
+  font-size: 11px;
+  font-weight: 600;
+  text-align: center;
+  color: var(--mr-chrome);
+}
+
+/* ==========================================================================
+   Step 3: Fit Cards (3 large cards)
+   ========================================================================== */
+.mr-configurator__fit-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+@media (min-width: 680px) {
+  .mr-configurator__fit-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.mr-configurator__fit-card {
+  background: var(--mr-dark-card);
+  border: 1px solid var(--mr-border);
+  border-radius: 10px;
+  padding: 20px 16px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition: all 0.25s ease;
+  position: relative;
+}
+
+.mr-configurator__fit-card:hover {
+  border-color: var(--mr-chrome-dim);
+  background: var(--mr-dark-hover);
+}
+
+.mr-configurator__fit-card[aria-checked="true"] {
+  border-color: var(--mr-red);
+  background: #1a1212;
+  box-shadow: 0 0 0 1px var(--mr-red), 0 0 18px var(--mr-red-glow);
+}
+
+.mr-configurator__fit-silhouette {
+  width: 100%;
+  height: 140px;
+  margin-bottom: 16px;
+}
+
+.mr-configurator__fit-name {
+  font-family: var(--mr-font-serif);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--mr-chrome);
+  margin: 0 0 4px 0;
+}
+
+.mr-configurator__fit-tagline {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--mr-red);
+  margin-bottom: 8px;
+}
+
+.mr-configurator__fit-desc {
+  font-size: 11px;
+  color: var(--mr-chrome-dim);
+  line-height: 1.45;
+  margin: 0;
+}
+
+/* ==========================================================================
+   Step 4 & 5: Neck & Cuff Icons Grid
+   ========================================================================== */
+.mr-configurator__svg-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+@media (min-width: 520px) {
+  .mr-configurator__svg-grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 14px;
+  }
+}
+
+.mr-configurator__icon-card {
+  background: var(--mr-dark-card);
+  border: 1px solid var(--mr-border);
+  border-radius: 8px;
+  padding: 14px 10px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition: all 0.2s ease;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+.mr-configurator__icon-card:hover {
+  border-color: var(--mr-chrome-dim);
+  background: var(--mr-dark-hover);
+}
+
+.mr-configurator__icon-card[aria-checked="true"] {
+  border-color: var(--mr-red);
+  background: #171111;
+  box-shadow: 0 0 0 1px var(--mr-red), 0 0 14px var(--mr-red-glow);
+}
+
+.mr-configurator__icon-svg-wrapper {
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+  color: var(--mr-chrome);
+}
+
+.mr-configurator__icon-card[aria-checked="true"] .mr-configurator__icon-svg-wrapper {
+  color: var(--mr-red);
+}
+
+.mr-configurator__icon-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--mr-chrome);
+  line-height: 1.3;
+}
+
+.mr-configurator__icon-sub {
+  font-size: 10px;
+  color: var(--mr-chrome-dim);
+  margin-top: 4px;
+}
+
+/* ==========================================================================
+   Step 6: Pocket (2 large options)
+   ========================================================================== */
+.mr-configurator__pocket-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+@media (min-width: 600px) {
+  .mr-configurator__pocket-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.mr-configurator__pocket-card {
+  background: var(--mr-dark-card);
+  border: 1px solid var(--mr-border);
+  border-radius: 10px;
+  padding: 24px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition: all 0.25s ease;
+}
+
+.mr-configurator__pocket-card:hover {
+  border-color: var(--mr-chrome-dim);
+}
+
+.mr-configurator__pocket-card[aria-checked="true"] {
+  border-color: var(--mr-red);
+  background: #191212;
+  box-shadow: 0 0 0 1px var(--mr-red), 0 0 16px var(--mr-red-glow);
+}
+
+.mr-configurator__pocket-preview {
+  width: 100px;
+  height: 100px;
+  margin-bottom: 16px;
+}
+
+.mr-configurator__pocket-name {
+  font-family: var(--mr-font-serif);
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--mr-chrome);
+  margin: 0 0 6px 0;
+}
+
+.mr-configurator__pocket-desc {
+  font-size: 12px;
+  color: var(--mr-chrome-dim);
+  margin: 0;
+}
+
+/* ==========================================================================
+   Step 7: Buttons (6 circular swatches)
+   ========================================================================== */
+.mr-configurator__button-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+@media (min-width: 480px) {
+  .mr-configurator__button-grid {
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 16px;
+  }
+}
+
+.mr-configurator__button-card {
+  background: var(--mr-dark-card);
+  border: 1px solid var(--mr-border);
+  border-radius: 8px;
+  padding: 16px 10px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition: all 0.2s ease;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+.mr-configurator__button-card:hover {
+  border-color: var(--mr-chrome-dim);
+}
+
+.mr-configurator__button-card[aria-checked="true"] {
+  border-color: var(--mr-red);
+  background: #181212;
+  box-shadow: 0 0 0 1px var(--mr-red), 0 0 14px var(--mr-red-glow);
+}
+
+.mr-configurator__button-disc {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  margin-bottom: 10px;
+  position: relative;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.5), inset 0 2px 4px rgba(255,255,255,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mr-configurator__button-holes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  width: 14px;
+  height: 14px;
+}
+
+.mr-configurator__button-hole {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #000;
+  box-shadow: inset 0 1px 1px rgba(0,0,0,0.8);
+}
+
+.mr-configurator__button-name {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--mr-chrome);
+}
+
+/* ==========================================================================
+   Step 8: Monogram / Initials
+   ========================================================================== */
+.mr-configurator__monogram-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.mr-configurator__field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.mr-configurator__field-label {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--mr-chrome);
+}
+
+.mr-configurator__input-text {
+  background: #121212;
+  border: 1px solid var(--mr-border-light);
+  border-radius: 6px;
+  padding: 12px 16px;
+  font-size: 16px;
+  font-family: var(--mr-font-serif);
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  max-width: 240px;
+  transition: border-color 0.2s;
+}
+
+.mr-configurator__input-text:focus {
+  outline: none;
+  border-color: var(--mr-red);
+  box-shadow: 0 0 0 2px var(--mr-red-glow);
+}
+
+.mr-configurator__segmented-control {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.mr-configurator__segmented-btn {
+  padding: 8px 16px;
+  background: var(--mr-dark-card);
+  border: 1px solid var(--mr-border);
+  border-radius: 6px;
+  color: var(--mr-chrome-dim);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.mr-configurator__segmented-btn:hover {
+  border-color: var(--mr-chrome-dim);
+  color: var(--mr-chrome);
+}
+
+.mr-configurator__segmented-btn[aria-checked="true"] {
+  background: var(--mr-red);
+  border-color: var(--mr-red);
+  color: #ffffff;
+  box-shadow: 0 0 10px var(--mr-red-glow);
+}
+
+.mr-configurator__thread-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(44px, 1fr));
+  gap: 10px;
+  max-width: 420px;
+}
+
+.mr-configurator__thread-dot {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.mr-configurator__thread-dot:hover {
+  transform: scale(1.1);
+}
+
+.mr-configurator__thread-dot[aria-checked="true"] {
+  border-color: #ffffff;
+  box-shadow: 0 0 0 2px var(--mr-red);
+}
+
+/* ==========================================================================
+   Step 9: Additional Details (Elbow patch + Insignia)
+   ========================================================================== */
+.mr-configurator__details-box {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.mr-configurator__toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  background: var(--mr-dark-card);
+  border: 1px solid var(--mr-border);
+  border-radius: 8px;
+}
+
+.mr-configurator__toggle-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--mr-chrome);
+}
+
+.mr-configurator__toggle-desc {
+  font-size: 11px;
+  color: var(--mr-chrome-dim);
+  margin-top: 2px;
+}
+
+.mr-configurator__switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.mr-configurator__switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.mr-configurator__slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: #262626;
+  transition: .3s;
+  border-radius: 24px;
+}
+
+.mr-configurator__slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: var(--mr-chrome);
+  transition: .3s;
+  border-radius: 50%;
+}
+
+.mr-configurator__switch input:checked + .mr-configurator__slider {
+  background-color: var(--mr-red);
+}
+
+.mr-configurator__switch input:checked + .mr-configurator__slider:before {
+  transform: translateX(20px);
+}
+
+.mr-configurator__insignia-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+@media (min-width: 480px) {
+  .mr-configurator__insignia-grid {
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 12px;
+  }
+}
+
+.mr-configurator__insignia-card {
+  background: var(--mr-dark-card);
+  border: 1px solid var(--mr-border);
+  border-radius: 8px;
+  padding: 12px 6px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: all 0.2s;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+.mr-configurator__insignia-card:hover {
+  border-color: var(--mr-chrome-dim);
+}
+
+.mr-configurator__insignia-card[aria-checked="true"] {
+  border-color: var(--mr-red);
+  background: #1a1212;
+  box-shadow: 0 0 0 1px var(--mr-red);
+}
+
+/* ==========================================================================
+   Step 10: Measurements (Standard vs Custom Tabs + Guide)
+   ========================================================================== */
+.mr-configurator__tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--mr-border);
+  padding-bottom: 12px;
+}
+
+.mr-configurator__tab-btn {
+  padding: 10px 18px;
+  background: var(--mr-dark-card);
+  border: 1px solid var(--mr-border);
+  border-radius: 6px;
+  color: var(--mr-chrome-dim);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.mr-configurator__tab-btn:hover {
+  color: var(--mr-chrome);
+  border-color: var(--mr-chrome-dim);
+}
+
+.mr-configurator__tab-btn[aria-selected="true"] {
+  background: rgba(204, 0, 1, 0.12);
+  border-color: var(--mr-red);
+  color: #ffffff;
+}
+
+.mr-configurator__sizes-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.mr-configurator__size-card {
+  min-width: 60px;
+  padding: 14px 18px;
+  background: var(--mr-dark-card);
+  border: 1px solid var(--mr-border);
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--mr-chrome);
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.mr-configurator__size-card:hover {
+  border-color: var(--mr-chrome-dim);
+}
+
+.mr-configurator__size-card[aria-checked="true"] {
+  background: var(--mr-red);
+  border-color: var(--mr-red);
+  color: #ffffff;
+  box-shadow: 0 0 12px var(--mr-red-glow);
+}
+
+.mr-configurator__custom-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+@media (min-width: 600px) {
+  .mr-configurator__custom-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.mr-configurator__measure-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.mr-configurator__measure-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--mr-chrome);
+  display: flex;
+  justify-content: space-between;
+}
+
+.mr-configurator__measure-range {
+  font-size: 10px;
+  color: var(--mr-chrome-dim);
+}
+
+.mr-configurator__measure-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.mr-configurator__measure-input {
+  width: 100%;
+  background: #121212;
+  border: 1px solid var(--mr-border-light);
+  border-radius: 6px;
+  padding: 10px 38px 10px 14px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #ffffff;
+  transition: border-color 0.2s;
+}
+
+.mr-configurator__measure-input:focus {
+  outline: none;
+  border-color: var(--mr-red);
+}
+
+.mr-configurator__measure-unit {
+  position: absolute;
+  right: 12px;
+  font-size: 12px;
+  color: var(--mr-chrome-dim);
+  pointer-events: none;
+}
+
+.mr-configurator__measure-hint {
+  font-size: 11px;
+  color: #888;
+  line-height: 1.35;
+}
+
+.mr-configurator__measure-guide {
+  margin-top: 20px;
+  padding: 16px;
+  background: #141414;
+  border: 1px solid var(--mr-border);
+  border-radius: 8px;
+  font-size: 12px;
+  color: var(--mr-chrome-dim);
+}
+
+.mr-configurator__measure-guide-title {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--mr-chrome);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ==========================================================================
+   Navigation Bar (Previous / Next / Confirm)
+   ========================================================================== */
+.mr-configurator__nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 20px;
+  border-top: 1px solid var(--mr-border);
+  margin-top: auto;
+}
+
+.mr-configurator__btn {
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 12px 24px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+}
+
+.mr-configurator__btn:focus-visible {
+  outline: 2px solid var(--mr-red);
+  outline-offset: 2px;
+}
+
+.mr-configurator__btn--secondary {
+  background: transparent;
+  color: var(--mr-chrome-dim);
+  border-color: var(--mr-border-light);
+}
+
+.mr-configurator__btn--secondary:hover:not(:disabled) {
+  color: var(--mr-chrome);
+  background: var(--mr-dark-hover);
+  border-color: var(--mr-chrome-dim);
+}
+
+.mr-configurator__btn--secondary:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.mr-configurator__btn--primary {
+  background: var(--mr-red);
+  color: #ffffff;
+  box-shadow: 0 4px 14px var(--mr-red-glow);
+}
+
+.mr-configurator__btn--primary:hover {
+  background: var(--mr-red-hover);
+  box-shadow: 0 6px 18px rgba(204,0,1,0.45);
+  transform: translateY(-1px);
+}
+
+/* ==========================================================================
+   Right Column (Mannequin Live Preview)
+   ========================================================================== */
+.mr-configurator__preview-col {
+  background: linear-gradient(180deg, #121212 0%, #0a0a0a 100%);
+  padding: 24px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-top: 1px solid var(--mr-border);
+  position: relative;
+}
+
+@media (min-width: 1024px) {
+  .mr-configurator__preview-col {
+    border-top: none;
+    padding: 32px 24px;
+  }
+}
+
+.mr-configurator__preview-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.mr-configurator__preview-title {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--mr-chrome-dim);
+}
+
+.mr-configurator__view-toggle {
+  display: flex;
+  background: #1a1a1a;
+  border: 1px solid var(--mr-border-light);
+  border-radius: 20px;
+  padding: 2px;
+}
+
+.mr-configurator__view-btn {
+  background: transparent;
+  border: none;
+  color: var(--mr-chrome-dim);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.mr-configurator__view-btn[aria-pressed="true"] {
+  background: var(--mr-red);
+  color: #ffffff;
+}
+
+.mr-configurator__mannequin-container {
+  width: 100%;
+  max-width: 320px;
+  aspect-ratio: 3 / 4;
+  position: relative;
+  overflow: hidden;
+  border-radius: 10px;
+  background: radial-gradient(circle at center, #1b1b1b 0%, #0d0d0d 100%);
+  border: 1px solid var(--mr-border);
+  box-shadow: inset 0 0 30px rgba(0,0,0,0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mr-configurator__svg-mannequin {
+  width: 100%;
+  height: 100%;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  transform-origin: center center;
+}
+
+/* Zoom targets via CSS transforms on mannequin wrapper */
+.mr-configurator__mannequin-container[data-zoom="collar"] .mr-configurator__svg-mannequin {
+  transform: scale(2.2) translateY(24%);
+}
+
+.mr-configurator__mannequin-container[data-zoom="cuff"] .mr-configurator__svg-mannequin {
+  transform: scale(2.2) translate(30%, -20%);
+}
+
+.mr-configurator__mannequin-container[data-zoom="pocket"] .mr-configurator__svg-mannequin {
+  transform: scale(2.1) translate(-18%, 8%);
+}
+
+.mr-configurator__mannequin-container[data-zoom="buttons"] .mr-configurator__svg-mannequin {
+  transform: scale(2) translateY(5%);
+}
+
+.mr-configurator__mannequin-container[data-zoom="monogram"] .mr-configurator__svg-mannequin {
+  transform: scale(2.4) translate(-20%, 10%);
+}
+
+.mr-configurator__mannequin-container[data-zoom="elbow"] .mr-configurator__svg-mannequin {
+  transform: scale(2) translate(28%, -10%);
+}
+
+.mr-configurator__preview-badge {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  background: rgba(10, 10, 10, 0.85);
+  backdrop-filter: blur(4px);
+  border: 1px solid var(--mr-border);
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--mr-chrome);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.mr-configurator__preview-badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--mr-red);
+  box-shadow: 0 0 6px var(--mr-red);
+}
+
+.mr-configurator__zoom-hint {
+  font-size: 11px;
+  color: var(--mr-chrome-dim);
+  text-align: center;
+  margin-top: 12px;
+}
+
+/* ==========================================================================
+   Mobile Accordion for Preview
+   ========================================================================== */
+.mr-configurator__mobile-preview-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 12px 16px;
+  background: #141414;
+  border: none;
+  border-bottom: 1px solid var(--mr-border);
+  color: var(--mr-chrome);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+@media (min-width: 1024px) {
+  .mr-configurator__mobile-preview-toggle {
+    display: none;
+  }
+}

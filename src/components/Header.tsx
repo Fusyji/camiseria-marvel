@@ -30,8 +30,8 @@ export const Header: React.FC<HeaderProps> = ({
       id="main-header"
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled
-          ? 'bg-white/95 dark:bg-[#09090b]/95 backdrop-blur-md shadow-sm border-b border-slate-200/80 dark:border-zinc-800/80 py-3.5'
-          : 'bg-white/90 dark:bg-[#09090b]/90 backdrop-blur-sm border-b border-slate-200/50 dark:border-zinc-800/40 py-5'
+          ? 'bg-white/95 dark:bg-[#09090b]/95 backdrop-blur-md shadow-sm border-b border-slate-200/80 dark:border-zinc-800/80 py-2.5 sm:py-3.5'
+          : 'bg-white/90 dark:bg-[#09090b]/90 backdrop-blur-sm border-b border-slate-200/50 dark:border-zinc-800/40 py-3 sm:py-4.5'
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
@@ -39,18 +39,18 @@ export const Header: React.FC<HeaderProps> = ({
         <a
           id="header-logo-link"
           href="#inicio"
-          className="flex items-center gap-3 group focus:outline-none"
+          className="flex items-center gap-2.5 sm:gap-3 group focus:outline-none min-w-0"
         >
-          <div className="relative w-10 h-10 rounded-md bg-[#09090b] dark:bg-zinc-900 border border-slate-300 dark:border-zinc-700/80 flex items-center justify-center shadow-sm transition-transform duration-300 group-hover:scale-105">
-            <span className="font-serif font-black text-xl tracking-tighter text-[#E50914]">
+          <div className="relative w-9 h-9 sm:w-10 sm:h-10 rounded-md bg-[#09090b] dark:bg-zinc-900 border border-slate-300 dark:border-zinc-700/80 flex items-center justify-center shadow-sm transition-transform duration-300 group-hover:scale-105 shrink-0">
+            <span className="font-serif font-black text-lg sm:text-xl tracking-tighter text-[#E50914]">
               M<span className="text-slate-200 font-light ml-[-2px]">R</span>
             </span>
           </div>
-          <div className="flex flex-col">
-            <span className="font-serif text-lg sm:text-xl font-bold tracking-[0.15em] text-stone-900 dark:text-stone-100 transition-colors uppercase">
+          <div className="flex flex-col min-w-0">
+            <span className="font-serif text-base sm:text-lg md:text-xl font-bold tracking-[0.1em] sm:tracking-[0.15em] text-stone-900 dark:text-stone-100 transition-colors uppercase truncate">
               Marvel Sastrería
             </span>
-            <span className="text-[9px] tracking-[0.3em] text-[#E50914] font-semibold uppercase -mt-0.5">
+            <span className="text-[8px] sm:text-[9px] tracking-[0.22em] sm:tracking-[0.3em] text-[#E50914] font-semibold uppercase -mt-0.5 truncate">
               Alta Sastrería Bespoke
             </span>
           </div>
@@ -61,34 +61,42 @@ export const Header: React.FC<HeaderProps> = ({
           <a
             id="nav-link-inicio"
             href="#inicio"
-            className="hover:text-[#E50914] transition-colors py-1 relative group"
+            className="hover:text-[#CC0001] transition-colors py-1 relative group"
           >
             Inicio
-            <span className="absolute bottom-0 left-0 w-0 h-[1.5px] bg-[#E50914] transition-all duration-300 group-hover:w-full"></span>
+            <span className="absolute bottom-0 left-0 w-0 h-[1.5px] bg-[#CC0001] transition-all duration-300 group-hover:w-full"></span>
+          </a>
+          <a
+            id="nav-link-configurador"
+            href="#configurador"
+            className="hover:text-[#CC0001] text-[#CC0001] font-semibold transition-colors py-1 relative group"
+          >
+            Configurador (10 Pasos)
+            <span className="absolute bottom-0 left-0 w-full h-[1.5px] bg-[#CC0001] transition-all duration-300"></span>
           </a>
           <a
             id="nav-link-experiencia"
             href="#experiencia"
-            className="hover:text-[#E50914] transition-colors py-1 relative group"
+            className="hover:text-[#CC0001] transition-colors py-1 relative group"
           >
             La Experiencia
-            <span className="absolute bottom-0 left-0 w-0 h-[1.5px] bg-[#E50914] transition-all duration-300 group-hover:w-full"></span>
+            <span className="absolute bottom-0 left-0 w-0 h-[1.5px] bg-[#CC0001] transition-all duration-300 group-hover:w-full"></span>
           </a>
           <a
             id="nav-link-coleccion"
             href="#coleccion"
-            className="hover:text-[#E50914] transition-colors py-1 relative group"
+            className="hover:text-[#CC0001] transition-colors py-1 relative group"
           >
             Colección
-            <span className="absolute bottom-0 left-0 w-0 h-[1.5px] bg-[#E50914] transition-all duration-300 group-hover:w-full"></span>
+            <span className="absolute bottom-0 left-0 w-0 h-[1.5px] bg-[#CC0001] transition-all duration-300 group-hover:w-full"></span>
           </a>
           <a
             id="nav-link-contacto"
             href="#contacto"
-            className="hover:text-[#E50914] transition-colors py-1 relative group"
+            className="hover:text-[#CC0001] transition-colors py-1 relative group"
           >
             Contacto
-            <span className="absolute bottom-0 left-0 w-0 h-[1.5px] bg-[#E50914] transition-all duration-300 group-hover:w-full"></span>
+            <span className="absolute bottom-0 left-0 w-0 h-[1.5px] bg-[#CC0001] transition-all duration-300 group-hover:w-full"></span>
           </a>
         </nav>
 
@@ -149,20 +157,27 @@ export const Header: React.FC<HeaderProps> = ({
       {isMobileMenuOpen && (
         <div
           id="mobile-dropdown-nav"
-          className="md:hidden bg-white dark:bg-[#09090b] border-b border-slate-200 dark:border-zinc-800 px-6 py-6 transition-all duration-300"
+          className="md:hidden bg-white dark:bg-[#09090b] border-b border-slate-200 dark:border-zinc-800 px-6 py-6 transition-all duration-300 max-h-[calc(100vh-4.5rem)] overflow-y-auto shadow-2xl"
         >
           <div className="flex flex-col gap-4 text-sm uppercase tracking-widest font-medium text-stone-800 dark:text-stone-200">
             <a
               href="#inicio"
               onClick={() => setIsMobileMenuOpen(false)}
-              className="py-2 hover:text-[#E50914] transition-colors border-b border-slate-100 dark:border-zinc-900"
+              className="py-2 hover:text-[#CC0001] transition-colors border-b border-slate-100 dark:border-zinc-900"
             >
               Inicio
             </a>
             <a
+              href="#configurador"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="py-2 text-[#CC0001] font-semibold hover:text-[#CC0001] transition-colors border-b border-slate-100 dark:border-zinc-900"
+            >
+              Configurador (10 Pasos)
+            </a>
+            <a
               href="#experiencia"
               onClick={() => setIsMobileMenuOpen(false)}
-              className="py-2 hover:text-[#E50914] transition-colors border-b border-slate-100 dark:border-zinc-900"
+              className="py-2 hover:text-[#CC0001] transition-colors border-b border-slate-100 dark:border-zinc-900"
             >
               La Experiencia
             </a>

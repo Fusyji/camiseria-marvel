@@ -9,6 +9,7 @@ import { ContactSection } from './components/ContactSection';
 import { Footer } from './components/Footer';
 import { ProductDetailModal } from './components/ProductDetailModal';
 import { CustomBuilderModal } from './components/CustomBuilderModal';
+import { ShirtConfiguratorSection } from './components/ShirtConfiguratorSection';
 
 export function App() {
   // Light Mode default as strictly mandated
@@ -66,14 +67,17 @@ export function App() {
         {/* 2. Sección "El Arte del Bespoke" (Valores) */}
         <CraftsmanshipSection />
 
-        {/* 3. Showcase de Camisas (Grid de 10 maniquíes con etiquetas exactas de imagen) */}
+        {/* 3. Nuevo Configurador de Camisas a Medida de 10 Pasos (TypeScript Plano) */}
+        <ShirtConfiguratorSection />
+
+        {/* 4. Showcase de Camisas (Grid de 10 maniquíes con etiquetas exactas de imagen) */}
         <Catalog
           shirts={shirts}
           onSelectShirt={(shirt) => setSelectedShirt(shirt)}
           onOpenCustomBuilder={(shirt) => handleOpenCustomBuilder(shirt)}
         />
 
-        {/* 4. Sección de Contacto (Netlify Forms) */}
+        {/* 5. Sección de Contacto (Netlify Forms) */}
         <ContactSection />
       </main>
 

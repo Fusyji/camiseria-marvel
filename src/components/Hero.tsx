@@ -13,7 +13,7 @@ export const Hero: React.FC<HeroProps> = ({
   return (
     <section
       id="inicio"
-      className="relative min-h-[92vh] sm:min-h-screen flex items-center justify-center pt-24 pb-16 overflow-hidden bg-stone-50 dark:bg-[#09090b] transition-colors duration-300"
+      className="relative min-h-[92vh] sm:min-h-screen flex items-center justify-center pt-32 sm:pt-36 pb-16 overflow-hidden bg-stone-50 dark:bg-[#09090b] transition-colors duration-300"
     >
       {/* Background Architectural Canvas with subtle lighting and texture */}
       <div className="absolute inset-0 pointer-events-none opacity-40 dark:opacity-25 mix-blend-overlay">
