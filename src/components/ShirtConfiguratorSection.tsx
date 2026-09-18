@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { mountShirtConfigurator, ShirtConfig } from '../shirt-configurator';
-import { CheckCircle2, Sparkles, Send, Loader2, MessageSquare, AlertCircle, RefreshCw, X } from 'lucide-react';
+import { measurementsGuideModal } from '../shirt-configurator/measurements-guide-modal';
+import { CheckCircle2, Sparkles, Send, Loader2, MessageSquare, AlertCircle, RefreshCw, X, Ruler } from 'lucide-react';
 import { convertSvgToPngBase64 } from '../utils/exportSvgToPng';
 
 export const ShirtConfiguratorSection: React.FC = () => {
@@ -47,8 +48,19 @@ export const ShirtConfiguratorSection: React.FC = () => {
     e.preventDefault();
     if (!completedConfig) return;
 
-    if (!nombre.trim() || !email.trim()) {
-      setErrorMessage('Por favor ingresa tu nombre y correo electrónico para registrar tu pedido.');
+    const trimmedNombre = nombre.trim();
+    const trimmedEmail = email.trim();
+    const trimmedTelefono = telefono.trim();
+    const trimmedNotas = notas.trim();
+
+    if (!trimmedNombre || trimmedNombre.length < 2) {
+      setErrorMessage('Por favor ingresa tu nombre completo (mínimo 2 caracteres).');
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!trimmedEmail || !emailRegex.test(trimmedEmail)) {
+      setErrorMessage('Por favor ingresa una dirección de correo electrónico válida.');
       return;
     }
 
@@ -68,10 +80,10 @@ export const ShirtConfiguratorSection: React.FC = () => {
       ordenId: generatedOrderId,
       fecha: new Date().toISOString(),
       cliente: {
-        nombre: nombre.trim(),
-        email: email.trim(),
-        telefono: telefono.trim() || 'No proporcionado',
-        notas: notas.trim() || 'Ninguna'
+        nombre: trimmedNombre.slice(0, 80),
+        email: trimmedEmail.slice(0, 100),
+        telefono: trimmedTelefono ? trimmedTelefono.slice(0, 30) : 'No proporcionado',
+        notas: trimmedNotas ? trimmedNotas.slice(0, 500) : 'Ninguna'
       },
       configuracion: completedConfig,
       previewPngBase64
@@ -130,6 +142,17 @@ export const ShirtConfiguratorSection: React.FC = () => {
           <p className="text-[#A8ABB3] text-sm sm:text-base leading-relaxed">
             "No vendemos tallas, creamos prendas únicas." Define cada atributo artesanal con visualización anatómica en tiempo real.
           </p>
+          <div className="mt-5 flex items-center justify-center">
+            <button
+              type="button"
+              id="mr-btn-header-measurements-guide"
+              onClick={() => measurementsGuideModal.open(0)}
+              className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-[#121214] hover:bg-[#1C1C20] border border-[#2E2E34] hover:border-[#CC0001] text-xs font-semibold tracking-wider uppercase text-[#E6E7EB] hover:text-white transition-all shadow-sm group cursor-pointer"
+            >
+              <Ruler className="w-4 h-4 text-[#CC0001] group-hover:scale-110 transition-transform" />
+              <span>Guía de Precisión Sartorial · ¿Cómo tomar mis medidas?</span>
+            </button>
+          </div>
         </div>
 
         {/* DOM Mount Target for Plain TypeScript Configurator */}

@@ -1432,3 +1432,511 @@
     display: none;
   }
 }
+
+/* ==============================================================================
+   BOTÓN BAJO EL MANIQUÍ (PREVIEW COLUMN GUIDE BANNER)
+   ============================================================================== */
+.mr-configurator__preview-guide-banner {
+  width: 100%;
+  max-width: 320px;
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.mr-configurator__preview-guide-btn {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: rgba(204, 0, 1, 0.12);
+  border: 1px solid rgba(204, 0, 1, 0.5);
+  color: #FFFFFF;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 10px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.mr-configurator__preview-guide-btn:hover {
+  background: rgba(204, 0, 1, 0.28);
+  border-color: #CC0001;
+  color: #FFFFFF;
+  box-shadow: 0 0 12px rgba(204, 0, 1, 0.4);
+  transform: translateY(-1px);
+}
+
+.mr-configurator__preview-guide-btn .mr-preview-guide-icon {
+  color: #CC0001;
+  flex-shrink: 0;
+}
+
+.mr-configurator__preview-guide-hint {
+  font-size: 11px;
+  color: #8E8E93;
+  text-align: center;
+  line-height: 1.3;
+}
+
+/* ==============================================================================
+   PASO 10: BOTONES Y CTAS DE LA GUÍA DE MEDICIÓN
+   ============================================================================== */
+.mr-configurator__measurements-guide-cta {
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.mr-configurator__guide-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(204, 0, 1, 0.14);
+  border: 1px solid rgba(204, 0, 1, 0.5);
+  color: #FFFFFF;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 10px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.mr-configurator__guide-btn:hover {
+  background: #CC0001;
+  border-color: #CC0001;
+  color: #FFFFFF;
+  box-shadow: 0 0 14px rgba(204, 0, 1, 0.5);
+  transform: translateY(-1px);
+}
+
+.mr-configurator__guide-btn .mr-guide-icon {
+  color: #CC0001;
+  transition: color 0.2s;
+}
+
+.mr-configurator__guide-btn:hover .mr-guide-icon {
+  color: #FFFFFF;
+}
+
+.mr-configurator__measure-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.mr-configurator__measure-hint-btn {
+  background: transparent;
+  border: none;
+  color: #CC0001;
+  font-size: 11px;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.2s;
+}
+
+.mr-configurator__measure-hint-btn:hover {
+  color: #FF3B30;
+}
+
+.mr-configurator__measure-guide--interactive {
+  background: #141418;
+  border: 1px solid #282830;
+  border-radius: 8px;
+  padding: 18px;
+}
+
+.mr-configurator__guide-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 16px;
+  background: #1C1C22;
+  border: 1px solid #3A3A42;
+  border-radius: 6px;
+  color: #E6E7EB;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.mr-configurator__guide-action-btn:hover {
+  background: #CC0001;
+  border-color: #CC0001;
+  color: #FFFFFF;
+  box-shadow: 0 4px 12px rgba(204, 0, 1, 0.4);
+}
+
+.mr-configurator__guide-action-btn--secondary {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.mr-configurator__guide-action-btn--secondary:hover {
+  background: rgba(204, 0, 1, 0.2);
+  border-color: #CC0001;
+  color: #FFFFFF;
+}
+
+/* ==============================================================================
+   MODAL DE LA GUÍA DE MEDICIONES BESPOKE (100% SCOPEADO)
+   ============================================================================== */
+.mr-configurator.mr-guide-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 999999;
+  background-color: rgba(0, 0, 0, 0.88);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+.mr-configurator.mr-guide-backdrop--visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.mr-configurator .mr-guide-dialog {
+  position: relative;
+  width: 100%;
+  max-width: 840px;
+  max-height: 92vh;
+  background: #0E0E12;
+  border: 1px solid #282830;
+  border-radius: 12px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.85), 0 0 0 1px rgba(204, 0, 1, 0.3);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.mr-configurator .mr-guide-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  border-bottom: 1px solid #222228;
+  background: #0A0A0E;
+}
+
+.mr-configurator .mr-guide-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.mr-configurator .mr-guide-badge {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: #CC0001;
+  text-transform: uppercase;
+}
+
+.mr-configurator .mr-guide-heading {
+  margin: 0;
+  font-size: 18px;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 700;
+  color: #E6E7EB;
+  letter-spacing: 0.05em;
+}
+
+.mr-configurator .mr-guide-close {
+  background: transparent;
+  border: none;
+  color: #888892;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s, background 0.2s;
+}
+
+.mr-configurator .mr-guide-close:hover {
+  color: #FFFFFF;
+  background: #22222A;
+}
+
+.mr-configurator .mr-guide-rule-banner {
+  background: #59111E;
+  color: #F3F4F6;
+  padding: 10px 24px;
+  font-size: 12px;
+  line-height: 1.4;
+  border-bottom: 1px solid #751727;
+}
+
+.mr-configurator .mr-guide-rule-banner strong {
+  color: #FFFFFF;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.mr-configurator .mr-guide-tabs {
+  display: flex;
+  overflow-x: auto;
+  background: #141418;
+  border-bottom: 1px solid #222228;
+  padding: 4px 16px 0;
+  gap: 4px;
+}
+
+.mr-configurator .mr-guide-tab {
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 8px 12px;
+  color: #8E8E93;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.mr-configurator .mr-guide-tab:hover {
+  color: #E6E7EB;
+}
+
+.mr-configurator .mr-guide-tab--active {
+  color: #FFFFFF;
+  border-bottom-color: #CC0001;
+}
+
+.mr-configurator .mr-guide-tab-num {
+  font-size: 10px;
+  background: #24242A;
+  padding: 2px 5px;
+  border-radius: 4px;
+  color: #A1A1AA;
+}
+
+.mr-configurator .mr-guide-tab--active .mr-guide-tab-num {
+  background: #CC0001;
+  color: #FFFFFF;
+}
+
+.mr-configurator .mr-guide-body {
+  padding: 24px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.mr-configurator .mr-guide-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+
+@media (min-width: 680px) {
+  .mr-configurator .mr-guide-grid {
+    grid-template-columns: 260px 1fr;
+  }
+}
+
+.mr-configurator .mr-guide-diagram-card {
+  background: #141418;
+  border: 1px solid #282830;
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 220px;
+}
+
+.mr-configurator .mr-guide-svg {
+  width: 100%;
+  max-width: 220px;
+  height: auto;
+}
+
+.mr-configurator .mr-guide-diagram-label {
+  font-size: 10px;
+  color: #8E8E93;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.mr-configurator .mr-guide-step-tag {
+  font-size: 10px;
+  color: #CC0001;
+  letter-spacing: 0.15em;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.mr-configurator .mr-guide-step-title {
+  margin: 4px 0 6px;
+  font-size: 22px;
+  font-family: 'Playfair Display', Georgia, serif;
+  color: #FFFFFF;
+}
+
+.mr-configurator .mr-guide-definition {
+  font-size: 13px;
+  color: #C7C7CC;
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+
+.mr-configurator .mr-guide-steps-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.mr-configurator .mr-guide-step-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.mr-configurator .mr-guide-step-num-badge {
+  background: #24242A;
+  color: #E6E7EB;
+  font-size: 11px;
+  font-weight: 700;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.mr-configurator .mr-guide-step-text {
+  font-size: 12.5px;
+  color: #D1D1D6;
+  line-height: 1.45;
+}
+
+.mr-configurator .mr-guide-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 6px;
+  font-size: 12px;
+  line-height: 1.4;
+  margin-bottom: 8px;
+}
+
+.mr-configurator .mr-guide-box strong {
+  display: block;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  margin-bottom: 2px;
+}
+
+.mr-configurator .mr-guide-box p {
+  margin: 0;
+}
+
+.mr-configurator .mr-guide-box--correct {
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: #D1FAE5;
+}
+
+.mr-configurator .mr-guide-box--correct strong {
+  color: #10B981;
+}
+
+.mr-configurator .mr-guide-box--avoid {
+  background: rgba(204, 0, 1, 0.08);
+  border: 1px solid rgba(204, 0, 1, 0.3);
+  color: #FEE2E2;
+}
+
+.mr-configurator .mr-guide-box--avoid strong {
+  color: #CC0001;
+}
+
+.mr-configurator .mr-guide-box-icon {
+  font-weight: bold;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.mr-configurator .mr-guide-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 24px;
+  border-top: 1px solid #222228;
+  background: #0A0A0E;
+}
+
+.mr-configurator .mr-guide-step-counter {
+  font-size: 12px;
+  color: #8E8E93;
+}
+
+.mr-configurator .mr-guide-btn-footer {
+  padding: 8px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.mr-configurator .mr-guide-btn-footer--secondary {
+  background: #1C1C20;
+  border: 1px solid #333338;
+  color: #E6E7EB;
+}
+
+.mr-configurator .mr-guide-btn-footer--secondary:hover:not(:disabled) {
+  background: #2C2C32;
+}
+
+.mr-configurator .mr-guide-btn-footer--primary {
+  background: #CC0001;
+  border: 1px solid #CC0001;
+  color: #FFFFFF;
+}
+
+.mr-configurator .mr-guide-btn-footer--primary:hover {
+  background: #B30001;
+}
+

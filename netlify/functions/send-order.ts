@@ -12,6 +12,18 @@ interface HandlerResponse {
   body: string;
 }
 
+function escapeHtml(str: string | null | undefined): string {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 export const handler = async (event: HandlerEvent): Promise<HandlerResponse> => {
   const headers = {
     'Access-Control-Allow-Origin': '*',
@@ -41,8 +53,68 @@ export const handler = async (event: HandlerEvent): Promise<HandlerResponse> => 
       };
     }
 
-    const payload = JSON.parse(event.body);
+    // Prevención de ataques por payload desmedido (límite 4.5 MB)
+    if (event.body.length > 4.5 * 1024 * 1024) {
+      return {
+        statusCode: 413,
+        headers,
+        body: JSON.stringify({ error: 'El tamaño de la solicitud excede el límite permitido.' })
+      };
+    }
+
+    let payload: any;
+    try {
+      payload = JSON.parse(event.body);
+    } catch {
+      return {
+        statusCode: 400,
+        headers,
+        body: JSON.stringify({ error: 'JSON malformado en la solicitud.' })
+      };
+    }
+
     const { ordenId, cliente, configuracion, previewPngBase64 } = payload;
+
+    if (!configuracion) {
+      return {
+        statusCode: 422,
+        headers,
+        body: JSON.stringify({ error: 'Faltan los datos de configuración de la prenda.' })
+      };
+    }
+
+    // Validación y sanitización estricta de datos del cliente
+    const rawNombre = typeof cliente?.nombre === 'string' ? cliente.nombre.trim() : '';
+    const rawEmail = typeof cliente?.email === 'string' ? cliente.email.trim() : '';
+    const rawTelefono = typeof cliente?.telefono === 'string' ? cliente.telefono.trim() : '';
+    const rawNotas = typeof cliente?.notas === 'string' ? cliente.notas.trim() : '';
+
+    if (!rawNombre || rawNombre.length < 2) {
+      return {
+        statusCode: 422,
+        headers,
+        body: JSON.stringify({ error: 'El nombre es obligatorio y debe tener al menos 2 caracteres.' })
+      };
+    }
+
+    if (!rawEmail || !EMAIL_REGEX.test(rawEmail)) {
+      return {
+        statusCode: 422,
+        headers,
+        body: JSON.stringify({ error: 'El correo electrónico proporcionado no tiene un formato válido.' })
+      };
+    }
+
+    // Sanitización contra inyecciones HTML en el template de email
+    const clienteNombre = escapeHtml(rawNombre.slice(0, 80));
+    const clienteEmail = escapeHtml(rawEmail.slice(0, 100));
+    const clienteTel = escapeHtml((rawTelefono || 'No proporcionado').slice(0, 30));
+    const clienteNotas = escapeHtml((rawNotas || 'Ninguna').slice(0, 500));
+    const sanitizedOrderId = escapeHtml(String(ordenId || 'MR-BESPOKE').slice(0, 30));
+
+    // Sanitización de monograma bordado
+    const rawBordado = configuracion.bordado?.texto;
+    const bordadoSanitizado = rawBordado ? escapeHtml(String(rawBordado).slice(0, 12)) : '';
 
     const apiKey = process.env.RESEND_API_KEY;
     if (!apiKey) {
@@ -59,39 +131,34 @@ export const handler = async (event: HandlerEvent): Promise<HandlerResponse> => 
     const atelierEmail = process.env.ATELIER_NOTIFICATION_EMAIL || 'dygondock@gmail.com';
     const fromAddress = process.env.EMAIL_FROM || 'Marvel Sastrería <onboarding@resend.dev>';
 
-    // Garantizar que atelierEmail (dygondock@gmail.com) reciba el pedido
+    // Garantizar que atelierEmail reciba siempre el pedido
     const toRecipients: string[] = [atelierEmail];
     
     // Si no es el sandbox onboarding@resend.dev y el cliente puso su email, se incluye también
     const isSandbox = fromAddress.includes('resend.dev');
-    if (!isSandbox && cliente?.email && cliente.email !== atelierEmail) {
-      toRecipients.push(cliente.email);
+    if (!isSandbox && rawEmail && rawEmail !== atelierEmail) {
+      toRecipients.push(rawEmail);
     }
 
     // Adjuntos: PNG Maniquí y JSON técnico
     const attachments: Array<{ filename: string; content: Buffer }> = [];
-    if (previewPngBase64) {
+    if (previewPngBase64 && typeof previewPngBase64 === 'string' && previewPngBase64.length < 3.5 * 1024 * 1024) {
       const cleanBase64 = previewPngBase64.replace(/^data:image\/[a-z]+;base64,/, '');
       attachments.push({
-        filename: `Marvel_Sastreria_${ordenId || 'Bespoke'}_Maniqui.png`,
+        filename: `Marvel_Sastreria_${sanitizedOrderId}_Maniqui.png`,
         content: Buffer.from(cleanBase64, 'base64')
       });
     }
 
     const jsonStr = JSON.stringify(payload, null, 2);
     attachments.push({
-      filename: `Ficha_Tecnica_${ordenId || 'Bespoke'}.json`,
+      filename: `Ficha_Tecnica_${sanitizedOrderId}.json`,
       content: Buffer.from(jsonStr, 'utf-8')
     });
 
-    const clienteNombre = cliente?.nombre || 'Cliente Bespoke';
-    const clienteEmail = cliente?.email || 'No especificado';
-    const clienteTel = cliente?.telefono || 'No especificado';
-    const clienteNotas = cliente?.notas || 'Ninguna';
-
     const medidasTexto = configuracion.medidas?.tipo === 'estandar'
-      ? `Talla Estándar ${configuracion.medidas?.tallaEstandar || 'M'}`
-      : `Personalizada: Cuello ${configuracion.medidas?.valoresPersonalizados?.cuello || '-'}cm, Pecho ${configuracion.medidas?.valoresPersonalizados?.pecho || '-'}cm, Cintura ${configuracion.medidas?.valoresPersonalizados?.cintura || '-'}cm, Manga ${configuracion.medidas?.valoresPersonalizados?.manga || '-'}cm, Largo ${configuracion.medidas?.valoresPersonalizados?.largoCamisa || '-'}cm`;
+      ? `Talla Estándar ${escapeHtml(configuracion.medidas?.tallaEstandar || 'M')}`
+      : `Personalizada: Cuello ${escapeHtml(String(configuracion.medidas?.valoresPersonalizados?.cuello || '-'))}cm, Pecho ${escapeHtml(String(configuracion.medidas?.valoresPersonalizados?.pecho || '-'))}cm, Cintura ${escapeHtml(String(configuracion.medidas?.valoresPersonalizados?.cintura || '-'))}cm, Manga ${escapeHtml(String(configuracion.medidas?.valoresPersonalizados?.manga || '-'))}cm, Largo ${escapeHtml(String(configuracion.medidas?.valoresPersonalizados?.largoCamisa || '-'))}cm`;
 
     const htmlBody = `
       <div style="font-family: 'Georgia', serif, -apple-system, sans-serif; max-width: 620px; margin: 0 auto; background: #0A0A0A; color: #E6E7EB; border: 1px solid #262626; border-radius: 8px; overflow: hidden;">
@@ -116,16 +183,16 @@ export const handler = async (event: HandlerEvent): Promise<HandlerResponse> => 
           <div style="background: #18181B; border: 1px solid #27272A; border-radius: 6px; padding: 16px; margin-bottom: 20px;">
             <h3 style="margin: 0 0 10px; font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase; color: #CC0001;">Especificaciones de Confección</h3>
             <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
-              <tr style="border-bottom: 1px solid #27272A;"><td style="padding: 6px 0; color: #A1A1AA;">Orden:</td><td style="padding: 6px 0; color: #FFFFFF; font-weight: bold;">${ordenId}</td></tr>
-              <tr style="border-bottom: 1px solid #27272A;"><td style="padding: 6px 0; color: #A1A1AA;">Tejido:</td><td style="padding: 6px 0; color: #FFFFFF;">${configuracion.tejido?.name || configuracion.tejido?.nombre || '-'}</td></tr>
-              <tr style="border-bottom: 1px solid #27272A;"><td style="padding: 6px 0; color: #A1A1AA;">Color / Tono:</td><td style="padding: 6px 0; color: #FFFFFF;">${configuracion.color?.name || configuracion.color?.nombre || '-'} (${configuracion.color?.hex || ''})</td></tr>
-              <tr style="border-bottom: 1px solid #27272A;"><td style="padding: 6px 0; color: #A1A1AA;">Corte:</td><td style="padding: 6px 0; color: #FFFFFF; text-transform: uppercase;">${configuracion.corte}</td></tr>
-              <tr style="border-bottom: 1px solid #27272A;"><td style="padding: 6px 0; color: #A1A1AA;">Cuello:</td><td style="padding: 6px 0; color: #FFFFFF; text-transform: uppercase;">${configuracion.cuello}</td></tr>
-              <tr style="border-bottom: 1px solid #27272A;"><td style="padding: 6px 0; color: #A1A1AA;">Puño:</td><td style="padding: 6px 0; color: #FFFFFF; text-transform: uppercase;">${configuracion.puno}</td></tr>
-              <tr style="border-bottom: 1px solid #27272A;"><td style="padding: 6px 0; color: #A1A1AA;">Bolsillo:</td><td style="padding: 6px 0; color: #FFFFFF; text-transform: uppercase;">${configuracion.bolsillo}</td></tr>
-              <tr style="border-bottom: 1px solid #27272A;"><td style="padding: 6px 0; color: #A1A1AA;">Botones:</td><td style="padding: 6px 0; color: #FFFFFF;">${configuracion.botones?.name || configuracion.botones || '-'}</td></tr>
-              <tr style="border-bottom: 1px solid #27272A;"><td style="padding: 6px 0; color: #A1A1AA;">Monograma:</td><td style="padding: 6px 0; color: #FFFFFF;">${configuracion.bordado?.texto ? `"${configuracion.bordado.texto}" (${configuracion.bordado.posicion}, fuente ${configuracion.bordado.fuente})` : 'Sin iniciales'}</td></tr>
-              <tr style="border-bottom: 1px solid #27272A;"><td style="padding: 6px 0; color: #A1A1AA;">Insignia:</td><td style="padding: 6px 0; color: #FFFFFF;">${configuracion.insignia ? configuracion.insignia.forma : 'Ninguna'}</td></tr>
+              <tr style="border-bottom: 1px solid #27272A;"><td style="padding: 6px 0; color: #A1A1AA;">Orden:</td><td style="padding: 6px 0; color: #FFFFFF; font-weight: bold;">${sanitizedOrderId}</td></tr>
+              <tr style="border-bottom: 1px solid #27272A;"><td style="padding: 6px 0; color: #A1A1AA;">Tejido:</td><td style="padding: 6px 0; color: #FFFFFF;">${escapeHtml(configuracion.tejido?.name || configuracion.tejido?.nombre || '-')}</td></tr>
+              <tr style="border-bottom: 1px solid #27272A;"><td style="padding: 6px 0; color: #A1A1AA;">Color / Tono:</td><td style="padding: 6px 0; color: #FFFFFF;">${escapeHtml(configuracion.color?.name || configuracion.color?.nombre || '-')} (${escapeHtml(configuracion.color?.hex || '')})</td></tr>
+              <tr style="border-bottom: 1px solid #27272A;"><td style="padding: 6px 0; color: #A1A1AA;">Corte:</td><td style="padding: 6px 0; color: #FFFFFF; text-transform: uppercase;">${escapeHtml(configuracion.corte)}</td></tr>
+              <tr style="border-bottom: 1px solid #27272A;"><td style="padding: 6px 0; color: #A1A1AA;">Cuello:</td><td style="padding: 6px 0; color: #FFFFFF; text-transform: uppercase;">${escapeHtml(configuracion.cuello)}</td></tr>
+              <tr style="border-bottom: 1px solid #27272A;"><td style="padding: 6px 0; color: #A1A1AA;">Puño:</td><td style="padding: 6px 0; color: #FFFFFF; text-transform: uppercase;">${escapeHtml(configuracion.puno)}</td></tr>
+              <tr style="border-bottom: 1px solid #27272A;"><td style="padding: 6px 0; color: #A1A1AA;">Bolsillo:</td><td style="padding: 6px 0; color: #FFFFFF; text-transform: uppercase;">${escapeHtml(configuracion.bolsillo)}</td></tr>
+              <tr style="border-bottom: 1px solid #27272A;"><td style="padding: 6px 0; color: #A1A1AA;">Botones:</td><td style="padding: 6px 0; color: #FFFFFF;">${escapeHtml(configuracion.botones?.name || configuracion.botones || '-')}</td></tr>
+              <tr style="border-bottom: 1px solid #27272A;"><td style="padding: 6px 0; color: #A1A1AA;">Monograma:</td><td style="padding: 6px 0; color: #FFFFFF;">${bordadoSanitizado ? `"${bordadoSanitizado}" (${escapeHtml(configuracion.bordado?.posicion || '')}, fuente ${escapeHtml(configuracion.bordado?.fuente || '')})` : 'Sin iniciales'}</td></tr>
+              <tr style="border-bottom: 1px solid #27272A;"><td style="padding: 6px 0; color: #A1A1AA;">Insignia:</td><td style="padding: 6px 0; color: #FFFFFF;">${configuracion.insignia ? escapeHtml(configuracion.insignia.forma) : 'Ninguna'}</td></tr>
               <tr><td style="padding: 6px 0; color: #A1A1AA;">Medidas:</td><td style="padding: 6px 0; color: #FFFFFF;">${medidasTexto}</td></tr>
             </table>
           </div>
@@ -146,7 +213,7 @@ export const handler = async (event: HandlerEvent): Promise<HandlerResponse> => 
     const { data, error } = await resend.emails.send({
       from: fromAddress,
       to: toRecipients,
-      subject: `Nueva Orden Bespoke ${ordenId} — ${clienteNombre}`,
+      subject: `Nueva Orden Bespoke ${sanitizedOrderId} — ${clienteNombre}`,
       html: htmlBody,
       attachments
     });
@@ -167,7 +234,7 @@ export const handler = async (event: HandlerEvent): Promise<HandlerResponse> => 
       headers,
       body: JSON.stringify({
         success: true,
-        ordenId,
+        ordenId: sanitizedOrderId,
         messageId: data?.id
       })
     };

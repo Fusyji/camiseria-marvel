@@ -7,3 +7,4 @@ import './shirt-configurator.css';
 
 export * from './types';
 export * from './shirt-configurator';
+export * from './measurements-guide-modal';

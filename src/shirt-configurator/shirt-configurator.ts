@@ -26,6 +26,7 @@ import {
   StandardSize,
   CustomMeasurements,
 } from './types';
+import { measurementsGuideModal } from './measurements-guide-modal';
 
 // ============================================================================
 // DATA & OPTIONS DEFINITIONS
@@ -305,8 +306,25 @@ export function mountShirtConfigurator(
     <div class="mr-configurator__zoom-hint" id="mr-zoom-hint">
       Vista global de proporciones
     </div>
+    <div class="mr-configurator__preview-guide-banner">
+      <button type="button" class="mr-configurator__preview-guide-btn" id="mr-btn-mannequin-guide">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="mr-preview-guide-icon">
+          <circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line>
+        </svg>
+        <span>Guía de Precisión Sartorial</span>
+      </button>
+      <span class="mr-configurator__preview-guide-hint">¿Cómo tomar medidas? Ver manual interactivo</span>
+    </div>
   `;
   bodyEl.appendChild(previewColEl);
+
+  // Hook Mannequin Guide Button (Visible in ALL steps)
+  const btnMannequinGuide = previewColEl.querySelector('#mr-btn-mannequin-guide');
+  if (btnMannequinGuide) {
+    btnMannequinGuide.addEventListener('click', () => {
+      measurementsGuideModal.open(0);
+    });
+  }
 
   // Handle Mobile Toggle
   mobileToggle.addEventListener('click', () => {
@@ -1224,23 +1242,49 @@ export function mountShirtConfigurator(
           <div><strong style="color:#E6E7EB;">Largo:</strong> ${curr.length} cm</div>
         </div>
         <p style="font-size:11px; margin-top:12px; color:#A8ABB3;">
-          * En Marvel Sastrería todas las tallas estándar son ajustadas a mano por nuestro cortador antes de la confección final.
+          * En Marvel Sastrería todas las tallas estándar son calibradas a mano por nuestro cortador antes de la confección final.
         </p>
+        <button type="button" class="mr-configurator__guide-action-btn mr-configurator__guide-action-btn--secondary" id="mr-btn-std-guide" style="margin-top: 14px;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <span>¿Cómo tomar mis medidas exactas? Abrir Manual Bespoke</span>
+        </button>
       `;
+      const btnStdGuide = specsTable.querySelector('#mr-btn-std-guide');
+      if (btnStdGuide) {
+        btnStdGuide.addEventListener('click', () => measurementsGuideModal.open(0));
+      }
       stdPanel.appendChild(specsTable);
       wrapper.appendChild(stdPanel);
     } else {
       // Tab 2: Custom Measurements with validation
       const customPanel = document.createElement('div');
+
+      // Top CTA Banner for Custom Measurements
+      const topGuideBanner = document.createElement('div');
+      topGuideBanner.className = 'mr-configurator__measurements-guide-cta';
+      topGuideBanner.innerHTML = `
+        <button type="button" class="mr-configurator__guide-btn" id="mr-btn-open-custom-top-guide">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="mr-guide-icon">
+            <circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line>
+          </svg>
+          <span>¿Cómo tomar mis medidas? (Guía interactiva paso a paso)</span>
+        </button>
+      `;
+      const topGuideBtn = topGuideBanner.querySelector('#mr-btn-open-custom-top-guide');
+      if (topGuideBtn) {
+        topGuideBtn.addEventListener('click', () => measurementsGuideModal.open(0));
+      }
+      customPanel.appendChild(topGuideBanner);
+
       const grid = document.createElement('div');
       grid.className = 'mr-configurator__custom-grid';
 
-      const fields: { key: keyof CustomMeasurements; label: string; min: number; max: number; hint: string }[] = [
-        { key: 'cuello', label: 'Contorno de Cuello', min: 34, max: 52, hint: 'Alrededor de la base del cuello, dejando espacio para un dedo.' },
-        { key: 'pecho', label: 'Contorno de Pecho', min: 80, max: 150, hint: 'Alrededor de la parte más prominente del tórax bajo los brazos.' },
-        { key: 'cintura', label: 'Contorno de Cintura', min: 70, max: 145, hint: 'A la altura del ombligo manteniendo postura natural.' },
-        { key: 'manga', label: 'Largo de Manga', min: 55, max: 75, hint: 'Desde el hueso del hombro hasta la comisura de la muñeca.' },
-        { key: 'largoCamisa', label: 'Largo Total', min: 65, max: 95, hint: 'Desde la base de la nuca hasta el faldón deseado.' }
+      const fields: { key: keyof CustomMeasurements; stepIdx: number; label: string; min: number; max: number; hint: string }[] = [
+        { key: 'cuello', stepIdx: 0, label: 'Contorno de Cuello', min: 34, max: 52, hint: 'Base del cuello sin apretar la piel.' },
+        { key: 'pecho', stepIdx: 1, label: 'Contorno de Pecho', min: 80, max: 150, hint: 'Parte más prominente del tórax bajo los brazos.' },
+        { key: 'cintura', stepIdx: 2, label: 'Contorno de Cintura', min: 70, max: 145, hint: 'A la altura del ombligo con abdomen relajado.' },
+        { key: 'manga', stepIdx: 3, label: 'Largo de Manga', min: 55, max: 75, hint: 'Extremo del hombro hasta la base del pulgar.' },
+        { key: 'largoCamisa', stepIdx: 4, label: 'Largo Total', min: 65, max: 95, hint: 'Punto alto del hombro hasta la bragueta.' }
       ];
 
       const currentVals = config.medidas.valoresPersonalizados || {
@@ -1256,10 +1300,15 @@ export function mountShirtConfigurator(
         fieldWrap.className = 'mr-configurator__measure-field';
 
         fieldWrap.innerHTML = `
-          <label class="mr-configurator__measure-label" for="mr-meas-${f.key}">
-            <span>${f.label}</span>
-            <span class="mr-configurator__measure-range">${f.min}-${f.max} cm</span>
-          </label>
+          <div class="mr-configurator__measure-label-row">
+            <label class="mr-configurator__measure-label" for="mr-meas-${f.key}">
+              <span>${f.label}</span>
+              <span class="mr-configurator__measure-range">${f.min}-${f.max} cm</span>
+            </label>
+            <button type="button" class="mr-configurator__measure-hint-btn" data-step-idx="${f.stepIdx}" title="Ver cómo medir ${f.label}">
+              ¿Cómo medir?
+            </button>
+          </div>
           <div class="mr-configurator__measure-input-wrap">
             <input 
               id="mr-meas-${f.key}" 
@@ -1273,6 +1322,13 @@ export function mountShirtConfigurator(
           </div>
           <span class="mr-configurator__measure-hint">${f.hint}</span>
         `;
+
+        const hintBtn = fieldWrap.querySelector('.mr-configurator__measure-hint-btn');
+        if (hintBtn) {
+          hintBtn.addEventListener('click', () => {
+            measurementsGuideModal.open(f.stepIdx);
+          });
+        }
 
         const inputEl = fieldWrap.querySelector('input') as HTMLInputElement;
         inputEl.addEventListener('input', () => {
@@ -1288,18 +1344,27 @@ export function mountShirtConfigurator(
       });
       customPanel.appendChild(grid);
 
-      // Illustrated guide brief
+      // Illustrated guide brief with action button
       const guideBox = document.createElement('div');
-      guideBox.className = 'mr-configurator__measure-guide';
+      guideBox.className = 'mr-configurator__measure-guide mr-configurator__measure-guide--interactive';
       guideBox.innerHTML = `
         <div class="mr-configurator__measure-guide-title">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
           <span>Guía de Precisión Sartorial</span>
         </div>
-        <p style="margin: 0 0 8px 0; font-size:12px; line-height: 1.5;">
-          Usa una cinta métrica flexible manteniéndola nivelada sin apretar la piel. Si tienes dudas, nuestro maestro sastre verificará personalmente tus proporciones al recibir el diseño.
+        <p style="margin: 0 0 12px 0; font-size:12px; line-height: 1.5; color: #D1D1D6;">
+          Usa una cinta métrica flexible manteniéndola nivelada sin apretar la piel. Todas las medidas se registran justas; la holgura de confort se define después, durante el patronaje.
         </p>
+        <button type="button" class="mr-configurator__guide-action-btn" id="mr-btn-step10-guide">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <span>Abrir Manual Completo de Medición Bespoke con Diagramas →</span>
+        </button>
       `;
+      const btnStep10Guide = guideBox.querySelector('#mr-btn-step10-guide');
+      if (btnStep10Guide) {
+        btnStep10Guide.addEventListener('click', () => measurementsGuideModal.open(0));
+      }
+
       customPanel.appendChild(guideBox);
       wrapper.appendChild(customPanel);
     }
