@@ -1,18 +1,17 @@
-export type ShirtCategory = 'all' | 'formal' | 'lino' | 'smart-casual' | 'ceremonia';
+export type ShirtCategory =
+  | 'all'
+  | 'nueva-coleccion'
+  | 'ejecutiva'
+  | 'smart-casual'
+  | 'cuadros'
+  | 'signature'
+  | 'formal'
+  | 'lino'
+  | 'ceremonia';
 
-export type CollarType = 'Italiano (Cutaway)' | 'Francés Clásico' | 'Cuello Mao' | 'Button-Down' | 'Club Inglés' | 'Semi-Spread';
+export type CollarType = string;
 
-export type FabricType = 
-  | 'Lino Italiano Puro'
-  | 'Algodón Egipcio Giza 87'
-  | 'Algodón Egipcio 120/2'
-  | 'Popelín Suizo 140/2'
-  | 'Oxford Royal Pinpoint'
-  | 'Oxford Royal 100/2'
-  | 'Twill de Alta Densidad'
-  | 'Lino & Seda de Biella'
-  | 'Seda & Algodón Mercerizado'
-  | 'Lana Fría & Lino Sartorial';
+export type FabricType = string;
 
 export type FitType = 'El Ajuste Perfecto (Bespoke Anatómico)';
 
@@ -21,13 +20,15 @@ export interface Shirt {
   indexNumber: number; // 1 to 10
   name: string;
   code: string;
-  category: 'formal' | 'lino' | 'smart-casual' | 'ceremonia';
-  image: string; // "maniqui_mr_1.png" etc.
-  altText: string; // "Camisa a medida Marvel Sastrería 1" etc.
+  badge: string; // "Nueva Colección", "Premium", "Ejecutiva", "Atemporal", etc.
+  category: string;
+  image: string; // "./assets/images/[nombre-producto].webp"
+  altText: string;
   description: string;
-  fabric: FabricType;
+  subtitle?: string;
+  fabric: string;
   fabricOrigin: string;
-  collar: CollarType;
+  collar: string;
   cuff: string;
   monogramDefault: string;
   colors: string[];
@@ -35,6 +36,7 @@ export interface Shirt {
   isNew?: boolean;
   isBestseller?: boolean;
 }
+
 
 export interface CustomShirtConfig {
   fabric: string;

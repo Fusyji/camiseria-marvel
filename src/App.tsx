@@ -70,12 +70,14 @@ export function App() {
         {/* 3. Nuevo Configurador de Camisas a Medida de 10 Pasos (TypeScript Plano) */}
         <ShirtConfiguratorSection />
 
-        {/* 4. Showcase de Camisas (Grid de 10 maniquíes con etiquetas exactas de imagen) */}
+        {/* 4. Showcase de Camisas / Vitrina Barbados Luxury (Oculto temporalmente según solicitud) */}
+        {/*
         <Catalog
           shirts={shirts}
           onSelectShirt={(shirt) => setSelectedShirt(shirt)}
           onOpenCustomBuilder={(shirt) => handleOpenCustomBuilder(shirt)}
         />
+        */}
 
         {/* 5. Sección de Contacto (Netlify Forms) */}
         <ContactSection />

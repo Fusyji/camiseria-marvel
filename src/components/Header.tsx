@@ -83,14 +83,6 @@ export const Header: React.FC<HeaderProps> = ({
             <span className="absolute bottom-0 left-0 w-0 h-[1.5px] bg-[#CC0001] transition-all duration-300 group-hover:w-full"></span>
           </a>
           <a
-            id="nav-link-coleccion"
-            href="#coleccion"
-            className="hover:text-[#CC0001] transition-colors py-1 relative group"
-          >
-            Colección
-            <span className="absolute bottom-0 left-0 w-0 h-[1.5px] bg-[#CC0001] transition-all duration-300 group-hover:w-full"></span>
-          </a>
-          <a
             id="nav-link-contacto"
             href="#contacto"
             className="hover:text-[#CC0001] transition-colors py-1 relative group"
@@ -180,13 +172,6 @@ export const Header: React.FC<HeaderProps> = ({
               className="py-2 hover:text-[#CC0001] transition-colors border-b border-slate-100 dark:border-zinc-900"
             >
               La Experiencia
-            </a>
-            <a
-              href="#coleccion"
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="py-2 hover:text-[#E50914] transition-colors border-b border-slate-100 dark:border-zinc-900"
-            >
-              Colección
             </a>
             <a
               href="#contacto"

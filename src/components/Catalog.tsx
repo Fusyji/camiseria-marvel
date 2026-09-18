@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Shirt, ShirtCategory } from '../types';
-import { Sparkles, Scissors, Eye, MessageCircle, Check } from 'lucide-react';
+import { Shirt } from '../types';
+import { ShoppingBag, Scissors, Eye, MessageCircle } from 'lucide-react';
 
 interface CatalogProps {
   shirts: Shirt[];
@@ -13,24 +13,31 @@ export const Catalog: React.FC<CatalogProps> = ({
   onSelectShirt,
   onOpenCustomBuilder,
 }) => {
-  const [selectedCategory, setSelectedCategory] = useState<ShirtCategory>('all');
-  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [searchQuery] = useState('');
 
-  const categories: { id: ShirtCategory; label: string }[] = [
+  const categories = [
     { id: 'all', label: 'Toda la Colección (10 Piezas)' },
-    { id: 'lino', label: 'Lino Italiano de Biella' },
-    { id: 'formal', label: 'Formal & Alta Dirección' },
-    { id: 'smart-casual', label: 'Smart Sartorial' },
-    { id: 'ceremonia', label: 'Ceremonia & Gala' },
+    { id: 'nueva-coleccion', label: 'Nueva Colección' },
+    { id: 'ejecutiva', label: 'Línea Ejecutiva' },
+    { id: 'smart-casual', label: 'SmartWatch Casual' },
+    { id: 'cuadros', label: 'Cuadros & Vichy' },
+    { id: 'signature', label: 'Signature & Edición Limitada' },
   ];
 
   const filteredShirts = shirts.filter((shirt) => {
     const matchesCategory =
-      selectedCategory === 'all' || shirt.category === selectedCategory;
+      selectedCategory === 'all' ||
+      shirt.category === selectedCategory ||
+      (selectedCategory === 'signature' && (shirt.category === 'signature' || shirt.badge === 'Edición Limitada')) ||
+      (selectedCategory === 'nueva-coleccion' && (shirt.category === 'nueva-coleccion' || shirt.badge === 'Nueva Colección')) ||
+      (selectedCategory === 'cuadros' && (shirt.category === 'cuadros' || shirt.badge === 'Atemporal'));
+    
     const matchesSearch =
       shirt.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      shirt.fabric.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      shirt.collar.toLowerCase().includes(searchQuery.toLowerCase());
+      (shirt.subtitle && shirt.subtitle.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      (shirt.badge && shirt.badge.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      shirt.fabric.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesCategory && matchesSearch;
   });
 
@@ -85,7 +92,7 @@ export const Catalog: React.FC<CatalogProps> = ({
           ))}
         </div>
 
-        {/* The 10 Mannequin Showcase Grid with Chrome Borders and Exact Image Tags */}
+        {/* The 10 Showcase Grid (5 columns x 2 rows on xl) */}
         <div
           id="mannequin-showcase-grid"
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 sm:gap-8"
@@ -102,27 +109,35 @@ export const Catalog: React.FC<CatalogProps> = ({
                 {/* Visual Image Container with Clean Background & Subtle Chrome Plaque */}
                 <div className="relative aspect-[3/4] w-full overflow-hidden bg-gradient-to-b from-stone-100 to-stone-200/60 dark:from-zinc-900 dark:to-zinc-950 flex items-center justify-center p-3">
                   
-                  {/* EXACT REQUIRED IMAGE TAG FORMAT: <img src="maniqui_mr_X.png" alt="Camisa a medida Marvel Sastrería X" class="[tus clases]"> */}
+                  {/* Image with graceful fallback if the placeholder webp hasn't been uploaded yet */}
                   <img
                     src={shirt.image}
                     alt={shirt.altText}
+                    onError={(e) => {
+                      const target = e.currentTarget;
+                      if (!target.dataset.fallbackApplied) {
+                        target.dataset.fallbackApplied = 'true';
+                        target.src = `/maniqui_mr_${shirt.indexNumber}.png`;
+                      }
+                    }}
                     className="w-full h-full object-contain object-center transition-transform duration-700 ease-out group-hover:scale-105"
                     loading="lazy"
                   />
 
-                  {/* Badge: Index Number & Bespoke Flag */}
+                  {/* Badge: Index Number & Exact Badge Name from Catalog */}
                   <div className="absolute top-3 left-3 flex flex-col gap-1.5 pointer-events-none">
                     <span className="px-2 py-0.5 rounded bg-white/90 dark:bg-black/90 backdrop-blur-sm text-[10px] font-bold uppercase tracking-widest text-[#E50914] border border-slate-200 dark:border-zinc-800 shadow-xs">
-                      MR • 0{shirt.indexNumber}
+                      MR • {shirt.indexNumber < 10 ? `0${shirt.indexNumber}` : shirt.indexNumber}
                     </span>
-                    {shirt.isBestseller && (
-                      <span className="px-2 py-0.5 rounded bg-[#E50914] text-white text-[9px] font-bold uppercase tracking-widest shadow-xs">
-                        Pieza Insignia
-                      </span>
-                    )}
-                    {shirt.isNew && (
-                      <span className="px-2 py-0.5 rounded bg-stone-900 dark:bg-stone-100 text-stone-100 dark:text-stone-950 text-[9px] font-bold uppercase tracking-widest shadow-xs">
-                        Nueva Creación
+                    {shirt.badge && (
+                      <span className={`px-2 py-0.5 rounded text-white text-[9px] font-bold uppercase tracking-widest shadow-xs ${
+                        shirt.badge === 'Nueva Colección' || shirt.badge === 'Edición Limitada'
+                          ? 'bg-[#E50914]'
+                          : shirt.badge === 'Signature' || shirt.badge === 'Premium'
+                          ? 'bg-stone-900 dark:bg-stone-800 border border-zinc-700'
+                          : 'bg-zinc-800/95 dark:bg-zinc-800 text-stone-200'
+                      }`}>
+                        {shirt.badge}
                       </span>
                     )}
                   </div>
@@ -155,36 +170,38 @@ export const Catalog: React.FC<CatalogProps> = ({
                 {/* Card Editorial Info */}
                 <div className="p-5 flex flex-col flex-1 justify-between bg-white dark:bg-zinc-900/90">
                   <div>
-                    {/* Fabric and Origin */}
+                    {/* Origin Tag & Monogram Default */}
                     <div className="flex items-center justify-between text-[11px] text-stone-400 font-medium mb-1.5">
-                      <span className="uppercase tracking-wider">{shirt.fabricOrigin}</span>
-                      <span className="text-[#E50914] font-semibold">{shirt.monogramDefault}</span>
+                      <span className="uppercase tracking-wider truncate max-w-[150px]">{shirt.fabricOrigin}</span>
+                      <span className="text-[#E50914] font-semibold shrink-0">{shirt.monogramDefault}</span>
                     </div>
 
                     {/* Shirt Title */}
-                    <h3 className="font-serif text-lg font-bold text-stone-900 dark:text-stone-100 group-hover:text-[#E50914] transition-colors line-clamp-1">
+                    <h3 className="font-serif text-base sm:text-lg font-bold text-stone-900 dark:text-stone-100 group-hover:text-[#E50914] transition-colors line-clamp-1">
                       {shirt.name}
                     </h3>
 
-                    {/* Technical Bespoke Collar & Fabric */}
-                    <p className="mt-1 text-xs text-stone-500 dark:text-stone-400 font-light line-clamp-2">
-                      {shirt.fabric} • Cuello {shirt.collar}
+                    {/* Subtitle / Description */}
+                    <p className="mt-1 text-xs text-stone-500 dark:text-stone-400 font-light line-clamp-2 leading-relaxed">
+                      {shirt.subtitle || shirt.description}
                     </p>
                   </div>
 
-                  {/* Bespoke Action Buttons: Diseña el tuyo / El Ajuste Perfecto */}
+                  {/* Action Buttons: COMPRAR & Ver Detalles (Zero Precios) */}
                   <div className="mt-5 pt-4 border-t border-slate-100 dark:border-zinc-800/80 flex flex-col gap-2">
                     <button
                       type="button"
+                      id={`btn-comprar-${shirt.indexNumber}`}
                       onClick={() => onOpenCustomBuilder(shirt)}
                       className="w-full py-2.5 px-3 rounded bg-stone-900 dark:bg-stone-100 hover:bg-[#E50914] dark:hover:bg-[#E50914] text-white dark:text-stone-900 dark:hover:text-white font-semibold text-[11px] uppercase tracking-[0.15em] transition-all duration-300 shadow-xs flex items-center justify-center gap-1.5 cursor-pointer"
                     >
-                      <Scissors className="w-3.5 h-3.5" />
-                      <span>Diseña el tuyo</span>
+                      <ShoppingBag className="w-3.5 h-3.5" />
+                      <span>COMPRAR</span>
                     </button>
 
                     <button
                       type="button"
+                      id={`btn-detalles-${shirt.indexNumber}`}
                       onClick={() => onSelectShirt(shirt)}
                       className="w-full py-1.5 text-center text-[10px] uppercase tracking-widest text-stone-500 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-200 transition-colors font-medium cursor-pointer"
                     >
@@ -205,14 +222,15 @@ export const Catalog: React.FC<CatalogProps> = ({
               ¿Deseas una configuración sartorial enteramente única?
             </h4>
             <p className="text-xs sm:text-sm text-stone-600 dark:text-stone-400 font-light mt-1">
-              Selecciona tu propio paño de lino, tipo de cuello, puño y bordado de monograma en nuestro configurador.
+              Selecciona tu propio paño, tipo de cuello, puño y bordado de monograma en nuestro configurador bespoke.
             </p>
           </div>
           <button
             onClick={() => onOpenCustomBuilder()}
-            className="shrink-0 px-6 py-3.5 rounded bg-[#E50914] hover:bg-[#c80812] text-white text-xs font-semibold uppercase tracking-[0.2em] shadow-md transition-all cursor-pointer"
+            className="shrink-0 px-6 py-3.5 rounded bg-[#E50914] hover:bg-[#c80812] text-white text-xs font-semibold uppercase tracking-[0.2em] shadow-md transition-all cursor-pointer flex items-center gap-2"
           >
-            Iniciar Asistente Bespoke
+            <Scissors className="w-4 h-4" />
+            <span>Iniciar Asistente Bespoke</span>
           </button>
         </div>
 

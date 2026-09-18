@@ -89,8 +89,8 @@ export const Footer: React.FC = () => {
                 </a>
               </li>
               <li>
-                <a href="#coleccion" className="hover:text-[#E50914] transition-colors">
-                  Showcase de Maniquíes
+                <a href="#configurador" className="hover:text-[#E50914] transition-colors">
+                  Configurador (10 Pasos)
                 </a>
               </li>
               <li>

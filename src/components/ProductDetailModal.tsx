@@ -53,10 +53,24 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
             <img
               src={shirt.image}
               alt={shirt.altText}
+              onError={(e) => {
+                const target = e.currentTarget;
+                if (!target.dataset.fallbackApplied) {
+                  target.dataset.fallbackApplied = 'true';
+                  target.src = `/maniqui_mr_${shirt.indexNumber}.png`;
+                }
+              }}
               className="w-full h-full object-contain"
             />
-            <div className="absolute top-2 left-2 bg-[#09090b]/90 border border-zinc-700 backdrop-blur-sm text-[#E50914] text-[10px] font-bold px-2.5 py-1 rounded">
-              MR • 0{shirt.indexNumber}
+            <div className="absolute top-2 left-2 flex flex-col gap-1">
+              <span className="bg-[#09090b]/90 border border-zinc-700 backdrop-blur-sm text-[#E50914] text-[10px] font-bold px-2.5 py-1 rounded">
+                MR • {shirt.indexNumber < 10 ? `0${shirt.indexNumber}` : shirt.indexNumber}
+              </span>
+              {shirt.badge && (
+                <span className="bg-[#E50914] text-white text-[9px] font-bold px-2 py-0.5 rounded uppercase tracking-wider">
+                  {shirt.badge}
+                </span>
+              )}
             </div>
             <div className="absolute bottom-2 right-2 bg-white/90 dark:bg-zinc-900/90 text-stone-700 dark:text-stone-300 text-[10px] font-mono px-2.5 py-1 rounded border border-slate-200 dark:border-zinc-800">
               {shirt.code}
@@ -81,7 +95,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
             </h3>
 
             <p className="mt-3 text-xs sm:text-sm text-stone-600 dark:text-stone-300 font-light leading-relaxed">
-              {shirt.description}
+              {shirt.subtitle || shirt.description}
             </p>
 
             {/* Bespoke Specs Grid */}
@@ -131,7 +145,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
             <div className="mt-5 p-3 rounded-lg bg-stone-50 dark:bg-zinc-900/60 border border-slate-200 dark:border-zinc-800">
               <label className="text-[11px] uppercase tracking-wider font-semibold text-stone-700 dark:text-stone-300 flex items-center justify-between mb-1.5">
                 <span>Bordado de Iniciales (Monograma)</span>
-                <span className="text-[#E50914] text-[10px]">Sin Costo Adicional</span>
+                <span className="text-[#E50914] text-[10px] font-semibold">Bespoke Couture</span>
               </label>
               <div className="flex items-center gap-2">
                 <input
